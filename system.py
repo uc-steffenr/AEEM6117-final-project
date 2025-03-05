@@ -1,6 +1,8 @@
 """Defines dynamic system to be propagated."""
 import numpy as np
-from scipy.integrate import solve_ivp
+# from scipy.integrate import solve_ivp
+
+from integrate import integrate
 from utils import load_dynamics_func
 
 
@@ -8,6 +10,8 @@ class System:
     def __init__(self, y0, parameters, settings=dict()):
         self.y0 = y0
 
+        self.r_s = np.reshape(parameters['r_s'], (1, 2))
+        self.r_t = np.reshape(parameters['r_t'], (1, 2))
         self.m = parameters['m']
         self.rho = parameters['rho']
         self.I = parameters['I']
@@ -22,30 +26,23 @@ class System:
 
     def controls(self, t, y):
         return np.zeros(3)
-        # return np.array([2.*np.sin(2.*t), 0., np.cos(2.*t)])
+        # return np.array([2.*np.sin(2.*t), 0., 0.])
 
-    def dynamics(self, t, y):
-        # controls goes here
-        u = self.controls(t, y)
-        
-        yddot = self.dyn(y, u, self.rho, self.m, self.I, self.b).squeeze() 
-        return np.hstack((y[3:], yddot))
+    def dynamics(self, t, y, u):        
+        yddot = self.dyn(y, u, self.r_s, self.r_t, self.rho, self.m, self.I, self.b).squeeze() 
+        return np.hstack((y[4:], yddot))
 
-    def run(self, **solve_ivp_kwargs):
-        sol = solve_ivp(
+    def test_event(self, t, y):
+        return t >= 5.
+
+    def run(self):
+        sol = integrate(
             self.dynamics,
             (0., self.t_dur),
             self.y0,
-            t_eval=np.arange(0., self.t_dur+self.h, self.h),
-            **solve_ivp_kwargs
+            self.h,
+            self.controls,
+            self.test_event
         )
 
-        # Method to extract controls later here
-        vfunc = np.vectorize(self.controls,
-                            #  otypes=[np.ndarray],
-                             excluded=[1],
-                             cache=True,
-                             signature="()->(n)")
-        us = vfunc(sol.t, sol.y.T)
-
-        return sol.t, sol.y, us
+        return sol
