@@ -1,11 +1,11 @@
 """Defines dynamic system to be propagated."""
 import numpy as np
-# from scipy.integrate import solve_ivp
 
 from integrate import integrate
 from utils import load_dynamics_func
 
 
+# TODO: Will need some updating to account for controller design
 class System:
     def __init__(self, y0, parameters, settings=dict()):
         self.y0 = y0
@@ -29,7 +29,15 @@ class System:
         # return np.array([2.*np.sin(2.*t), 0., 0.])
 
     def dynamics(self, t, y, u):        
-        yddot = self.dyn(y, u, self.r_s, self.r_t, self.rho, self.m, self.I, self.b).squeeze() 
+        yddot = self.dyn(y,
+                         u,
+                         self.r_s,
+                         self.r_t,
+                         self.rho,
+                         self.m,
+                         self.I,
+                         self.b
+                         ).squeeze() 
         return np.hstack((y[4:], yddot))
 
     def test_event(self, t, y):
