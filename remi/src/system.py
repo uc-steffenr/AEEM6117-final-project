@@ -1,11 +1,10 @@
 """Defines dynamic system to be propagated."""
 import numpy as np
 
-from integrate import integrate
-from utils import load_dynamics_func
+from src.integrate import integrate
+from src.utils import load_dynamics_func
 
 
-# TODO: Will need some updating to account for controller design
 class System:
     def __init__(self, y0, parameters, settings=dict()):
         self.y0 = y0
@@ -23,10 +22,20 @@ class System:
         self.max_tau = np.array(settings.get('max_tau', (10., 10., 10.)))
 
         self.dyn = load_dynamics_func()
+        self.event = None
+        self.F = None
+
+    def set_controller(self, F):
+        self.F = F
+
+    def set_event(self, E):
+        self.event = E
 
     def controls(self, t, y):
-        return np.zeros(3)
-        # return np.array([2.*np.sin(2.*t), 0., 0.])
+        if self.F is None:
+            return np.zeros(3)
+
+        return self.F(t, y)
 
     def dynamics(self, t, y, u):        
         yddot = self.dyn(y,
@@ -40,9 +49,6 @@ class System:
                          ).squeeze() 
         return np.hstack((y[4:], yddot))
 
-    def test_event(self, t, y):
-        return t >= 5.
-
     def run(self):
         sol = integrate(
             self.dynamics,
@@ -50,7 +56,7 @@ class System:
             self.y0,
             self.h,
             self.controls,
-            self.test_event
+            self.event
         )
 
         return sol
