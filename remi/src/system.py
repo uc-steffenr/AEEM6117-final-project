@@ -1,8 +1,8 @@
 """Defines dynamic system to be propagated."""
 import numpy as np
 
-from src.integrate import integrate
-from src.utils import load_dynamics_func
+from .integrate import integrate
+from .utils import load_dynamics_func
 
 
 class System:
