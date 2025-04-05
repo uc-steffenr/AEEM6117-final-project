@@ -1,8 +1,8 @@
 """Defines tools to visualize runs and metrics."""
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-import os
 
 plt.rcParams['animation.embed_limit'] = 2**128
 
@@ -25,7 +25,26 @@ def find_nearest_ind(arr : np.ndarray, val : float) -> int:
     return (np.abs(arr - val[:, None])).argmin(axis=1)
 
 
-def plot_states(t, y, save, show, path):
+def plot_states(t : np.ndarray,
+                y : np.ndarray,
+                save : bool=True,
+                show : bool=False,
+                path : str=os.getcwd()) -> None:
+    """Plots states of system.
+
+    Parameters
+    ----------
+    t : np.ndarray
+        Time steps.
+    y : np.ndarray
+        States.
+    save : bool, optional
+        Whether to save plot, by default True.
+    show : bool, optional
+        Whether to show plot, by default False.
+    path : str, optional
+        Path to save plot to, by default os.getcwd().
+    """
     vars = ['theta_S', 'theta_1', 'theta_2', 'theta_T']
     fig, ax = plt.subplots(2, 2, sharex=True)
     ax = ax.ravel()
@@ -57,9 +76,29 @@ def plot_states(t, y, save, show, path):
     if show:
         plt.show()
     if save:
-        fig.savefig(os.path.join(path, 'angularvelocities_.jpg'))
+        fig.savefig(os.path.join(path, 'angular_velocities.jpg'))
 
-def plot_controls(t, u, save, show, path):
+
+def plot_controls(t : np.ndarray,
+                  u : np.ndarray,
+                  save : bool=True,
+                  show : bool=False,
+                  path : str=os.getcwd()) -> None:
+    """Plots controls of the system.
+
+    Parameters
+    ----------
+    t : np.ndarray
+        Time steps.
+    u : np.ndarray
+        Controls.
+    save : bool, optional
+        Whether to save plot, by default True.
+    show : bool, optional
+        Whether to show plot, by default False.
+    path : str, optional
+        Path to save plot to, by default os.getcwd().
+    """
     fig, ax = plt.subplots(1, 1)
 
     ax.plot(t, u[:, 0], label='$\tau_S$')
@@ -78,11 +117,25 @@ def plot_controls(t, u, save, show, path):
         fig.savefig(os.path.join(path, 'controls.jpg'))
 
 
-def animate(t, y, parameters, save, show, path, **func_animate_kwargs):
+def animate(y : np.ndarray,
+            parameters : dict,
+            path : str,
+            **func_animate_kwargs) -> None:
+    """Animates simulation.
+
+    Parameters
+    ----------
+    y : np.ndarray
+        States of system.
+    parameters : dict
+        Defining parameters of system.
+    path : str
+        Path to save animation to.
+    """
     rho = parameters['rho']
     r_s = parameters['r_s']
     r_t = parameters['r_t']
-    
+
     C = lambda th: np.array([[np.cos(th), -np.sin(th)], [np.sin(th), np.cos(th)]])
     r_0 = lambda th_s: r_s + C(th_s)@np.array([rho[0], 0.])
     r_1 = lambda th_s, th_1: r_0(th_s) + C(th_s)@C(th_1)@np.array([2.*rho[1], 0.])
@@ -159,4 +212,8 @@ def animate(t, y, parameters, save, show, path, **func_animate_kwargs):
 
         return main_sat, targ_sat, arm1, arm2, p1, p2
 
-    ani = FuncAnimation(fig, update, frames=range(0, len(t), 10), init_func=init, blit=False, interval=50)
+    if 'frames' not in func_animate_kwargs:
+        func_animate_kwargs['frames'] = len(y)
+
+    ani = FuncAnimation(fig, update, **func_animate_kwargs)
+    ani.save(os.path.join(path, 'animation.gif'))

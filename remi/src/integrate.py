@@ -18,7 +18,6 @@ def RK4(func, t, y, h, args):
 
     return y + (1./6.)*(k1 + 2.*k2 + 2.*k3 + k4)
 
-# Want to pass control to plant and have RK4 use that for all the steps in btwn
 def integrate(plant, t_span, y0, step_size, F, event=None):
     ts = np.arange(t_span[0], t_span[1], step_size)
     n = len(ts)
@@ -32,16 +31,17 @@ def integrate(plant, t_span, y0, step_size, F, event=None):
     # Main integration loop
     y = y0
     for i in range(1, n):
-        # try:
-        u = F(ts[i], y)
-        y = RK4(plant, ts[i], y, step_size, (u,))
+        try:
+            u = F(ts[i], y)
+            y = RK4(plant, ts[i], y, step_size, (u,))
         # Integration error
-        # except:
-        #     sol.y = sol.y[:i, :]
-        #     sol.t = ts[:i]
-        #     sol.u = sol.u[:i, :]
-        #     sol.status = -1
-        #     return sol
+        except Exception as e:
+            print(f'WARNING: {e}')
+            sol.y = sol.y[:i, :]
+            sol.t = ts[:i]
+            sol.u = sol.u[:i, :]
+            sol.status = -1
+            return sol
 
         sol.y[i, :] = y
         sol.u[i-1, :] = u
