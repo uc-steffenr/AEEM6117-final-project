@@ -1,7 +1,7 @@
 """Defines tools to visualize runs and metrics."""
 import numpy as np
 import matplotlib.pyplot as plt
-from matplolib.animation import FuncAnimation
+from matplotlib.animation import FuncAnimation
 import os
 
 plt.rcParams['animation.embed_limit'] = 2**128

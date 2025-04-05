@@ -1,6 +1,6 @@
 """Defines framework to run multiple simulations and get metrics."""
 from joblib import Parallel, delayed, parallel_backend
-from system import System
+from .system import System
 
 
 def evaluate(args):
@@ -8,8 +8,6 @@ def evaluate(args):
     return cond.run()
 
 
-# NOTE: We'll probably need to consider r_s and r_t as initial
-# conditions too
 class Simulation:
     def __init__(self,
                  conditions : dict,
@@ -21,7 +19,7 @@ class Simulation:
         self.conds = [System(y0, parameters, settings) \
                       for y0 in conditions['y0']]
         self.N = len(self.conds)
-    
+
     def run_simulations(self) -> dict:
         metrics = dict(ts=[None]*self.N,
                        ys=[None]*self.N,
