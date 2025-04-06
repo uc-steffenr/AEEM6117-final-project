@@ -11,3 +11,7 @@ Install `remi`. \
 ```pip install -e .```
 
 **Check out examples for usage.**
+
+## TODO
+- Need a widespread way to set controllers and events for `Simulation` conditions
+- Should `r_s` and `r_t` be parameters that are changed for multiple simulations?
