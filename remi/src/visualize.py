@@ -101,10 +101,10 @@ def plot_controls(t : np.ndarray,
     """
     fig, ax = plt.subplots(1, 1)
 
-    ax.plot(t, u[:, 0], label='$\tau_S$')
-    ax.plot(t, u[:, 1], label='$\tau_1$')
-    ax.plot(t, u[:, 2], label='$\tau_2$')
-    ax.set_ylabel('controls (Nm)')
+    ax.plot(t[:-1], u[:, 0], label=r'$\tau_S$')
+    ax.plot(t[:-1], u[:, 1], label=r'$\tau_1$')
+    ax.plot(t[:-1], u[:, 2], label=r'$\tau_2$')
+    ax.set_ylabel('torque (Nm)')
     ax.set_xlabel('time (s)')
     ax.legend()
     ax.grid()
@@ -144,8 +144,13 @@ def animate(y : np.ndarray,
 
     fig, ax = plt.subplots()
     # TODO: come up with logic for setting xlim and ylim
+    xlim = 1.5*np.max(np.abs([r_s[0], r_t[0]])) + np.max([rho[0], rho[3]]) + 2.*np.sum(rho[1:-1])
+    ylim = 1.5*np.max(np.abs([r_s[1], r_t[1]])) + np.max([rho[0], rho[3]]) + 2.*np.sum(rho[1:-1])
+
+    ax.set_xlim(-xlim, xlim)
+    ax.set_ylim(-ylim, ylim)
     ax.set_aspect('equal')
-    
+
     main_sat_verts = np.array([
         [-rho[0], -rho[0]],
         [rho[0], -rho[0]],

@@ -1,5 +1,7 @@
 """Defines framework to run multiple simulations and get metrics."""
+import numpy as np
 from joblib import Parallel, delayed, parallel_backend
+
 from .system import System
 
 
@@ -8,9 +10,11 @@ def evaluate(args : tuple[System]):
     return cond.run()
 
 
+# TODO: need a widespread way to set controller and events for conds
+# TODO: might need to make r_s and r_t changed for simulations
 class Simulation:
     def __init__(self,
-                 conditions : dict,
+                 conditions : list[np.ndarray],
                  parameters : dict,
                  settings : dict=dict(),
                  n_proc : int=2
@@ -19,7 +23,7 @@ class Simulation:
 
         Parameters
         ----------
-        conditions : dict
+        conditions : list[np.ndarray]
             Initial conditions for each system.
         parameters : dict
             Physical parameters.
@@ -30,7 +34,7 @@ class Simulation:
         """
         self.n_proc = n_proc
         self.conds = [System(y0, parameters, settings) \
-                      for y0 in conditions['y0']]
+                      for y0 in conditions]
         self.N = len(self.conds)
 
     def run_simulations(self) -> dict:
@@ -56,7 +60,7 @@ class Simulation:
         return metrics
     
     def run_parallel_simulations(self,
-                                 backend : str='multiprocessing'
+                                 backend : str='loky'
                                  ) -> dict:
         """Method to run simulations in parallel.
 
