@@ -18,4 +18,8 @@ from .src import (System,
                   Simulation,
                   plot_states,
                   plot_controls,
-                  animate)
+                  animate,
+                  load_position_func,
+                  load_velocity_func,
+                  load_ee_func,
+                  load_Je_func)
