@@ -67,7 +67,8 @@ class System:
         Parameters
         ----------
         E : Callable[[float, np.ndarray, float], bool]
-            _description_
+            Terminating event. Takes time, state, and tolerance as input,
+            returns boolean where True means event occurred.
         """
         self.event = E
 
