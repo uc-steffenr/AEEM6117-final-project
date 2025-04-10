@@ -31,6 +31,9 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
+                    <a class="variable" href="#REMI_DIR">REMI_DIR</a>
+            </li>
+            <li>
                     <a class="function" href="#load_position_func">load_position_func</a>
             </li>
             <li>
@@ -38,6 +41,12 @@
             </li>
             <li>
                     <a class="function" href="#load_dynamics_func">load_dynamics_func</a>
+            </li>
+            <li>
+                    <a class="function" href="#load_ee_func">load_ee_func</a>
+            </li>
+            <li>
+                    <a class="function" href="#load_Je_func">load_Je_func</a>
             </li>
     </ul>
 
@@ -64,43 +73,117 @@
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;Utilities for simulation.&quot;&quot;&quot;</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">dill</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="n">_pth</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="o">*</span><span class="vm">__file__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">dill</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_position_func</span><span class="p">():</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_pth</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;position.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_velocity_func</span><span class="p">():</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_pth</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_dynamics_func</span><span class="p">():</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_pth</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;dynamics.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="n">REMI_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;src&#39;</span><span class="p">)</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_position_func</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>                                     <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns position function for system.</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">    Returns</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    -------</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">    Callable[[np.ndarray, np.ndarray, np.ndarray, np.ndarray],</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">             (np.ndarray, np.ndarray, np.ndarray)]</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">        Given states y, r_s, r_t, and rho, returns r_1, r_2, and r_c.</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REMI_DIR</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;position.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_velocity_func</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>                                     <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns velocity function for the system</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">    Returns</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">    -------</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="sd">    Callable[[np.ndarray, np.ndarray, np.ndarray, np.ndarray],</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="sd">             (np.ndarray, np.ndarray, np.ndarray)]</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="sd">        Given states y, r_s, r_t, and rho, returns v_1, v_2, and v_c.</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REMI_DIR</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_dynamics_func</span><span class="p">():</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REMI_DIR</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;dynamics.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_ee_func</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns function to calculate end effector position.</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="sd">    Returns</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="sd">    -------</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="sd">    Callable[[np.ndarray, np.ndarray, np.ndarray], np.ndarray]</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="sd">        Given states y, r_s, and rho, returns end effector position in inertial frame.</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REMI_DIR</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;ee.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_Je_func</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns Jacobian of end effector.</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="sd">    Returns</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a><span class="sd">    -------</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="sd">    Callable[[np.ndarray, np.ndarray], np.ndarray]</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="sd">        Given states y and rho, returns end effector Jacobian Je.</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REMI_DIR</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;Je.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 </span></pre></div>
 
 
             </section>
+                <section id="REMI_DIR">
+                    <div class="attr variable">
+            <span class="name">REMI_DIR</span>        =
+<input id="REMI_DIR-view-value" class="view-value-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+            <label class="view-value-button pdoc-button" for="REMI_DIR-view-value"></label><span class="default_value">&#39;/mnt/c/Users/Nate Steffen/OneDrive - University of Cincinnati/Documents/Graduate School/Semesters/Spring 2025/Intelligent Robotics/Assignments/final-project/code/./remi/src&#39;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#REMI_DIR"></a>
+    
+    
+
+                </section>
                 <section id="load_position_func">
                             <input id="load_position_func-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">load_position_func</span><span class="signature pdoc-code condensed">(<span class="return-annotation">):</span></span>
+        <span class="name">load_position_func</span><span class="signature pdoc-code multiline">(<span class="return-annotation">) -> <span class="n">Callable</span><span class="p">[[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span>:</span></span>
 
                 <label class="view-source-button" for="load_position_func-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#load_position_func"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="load_position_func-8"><a href="#load_position_func-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_position_func</span><span class="p">():</span>
-</span><span id="load_position_func-9"><a href="#load_position_func-9"><span class="linenos"> 9</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_pth</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;position.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="load_position_func-10"><a href="#load_position_func-10"><span class="linenos">10</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="load_position_func-11"><a href="#load_position_func-11"><span class="linenos">11</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_position_func</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+</span><span id="load_position_func-12"><a href="#load_position_func-12"><span class="linenos">12</span></a>                                     <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+</span><span id="load_position_func-13"><a href="#load_position_func-13"><span class="linenos">13</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns position function for system.</span>
+</span><span id="load_position_func-14"><a href="#load_position_func-14"><span class="linenos">14</span></a>
+</span><span id="load_position_func-15"><a href="#load_position_func-15"><span class="linenos">15</span></a><span class="sd">    Returns</span>
+</span><span id="load_position_func-16"><a href="#load_position_func-16"><span class="linenos">16</span></a><span class="sd">    -------</span>
+</span><span id="load_position_func-17"><a href="#load_position_func-17"><span class="linenos">17</span></a><span class="sd">    Callable[[np.ndarray, np.ndarray, np.ndarray, np.ndarray],</span>
+</span><span id="load_position_func-18"><a href="#load_position_func-18"><span class="linenos">18</span></a><span class="sd">             (np.ndarray, np.ndarray, np.ndarray)]</span>
+</span><span id="load_position_func-19"><a href="#load_position_func-19"><span class="linenos">19</span></a><span class="sd">        Given states y, r_s, r_t, and rho, returns r_1, r_2, and r_c.</span>
+</span><span id="load_position_func-20"><a href="#load_position_func-20"><span class="linenos">20</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="load_position_func-21"><a href="#load_position_func-21"><span class="linenos">21</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REMI_DIR</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;position.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="load_position_func-22"><a href="#load_position_func-22"><span class="linenos">22</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Returns position function for system.</p>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong>Callable[[np.ndarray, np.ndarray, np.ndarray, np.ndarray],</strong>: (np.ndarray, np.ndarray, np.ndarray)]
+Given states y, r_s, r_t, and rho, returns r_1, r_2, and r_c.</li>
+</ul>
+</div>
+
 
                 </section>
                 <section id="load_velocity_func">
@@ -108,19 +191,37 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">load_velocity_func</span><span class="signature pdoc-code condensed">(<span class="return-annotation">):</span></span>
+        <span class="name">load_velocity_func</span><span class="signature pdoc-code multiline">(<span class="return-annotation">) -> <span class="n">Callable</span><span class="p">[[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span>:</span></span>
 
                 <label class="view-source-button" for="load_velocity_func-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#load_velocity_func"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="load_velocity_func-12"><a href="#load_velocity_func-12"><span class="linenos">12</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_velocity_func</span><span class="p">():</span>
-</span><span id="load_velocity_func-13"><a href="#load_velocity_func-13"><span class="linenos">13</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_pth</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="load_velocity_func-14"><a href="#load_velocity_func-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="load_velocity_func-24"><a href="#load_velocity_func-24"><span class="linenos">24</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_velocity_func</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+</span><span id="load_velocity_func-25"><a href="#load_velocity_func-25"><span class="linenos">25</span></a>                                     <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+</span><span id="load_velocity_func-26"><a href="#load_velocity_func-26"><span class="linenos">26</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns velocity function for the system</span>
+</span><span id="load_velocity_func-27"><a href="#load_velocity_func-27"><span class="linenos">27</span></a>
+</span><span id="load_velocity_func-28"><a href="#load_velocity_func-28"><span class="linenos">28</span></a><span class="sd">    Returns</span>
+</span><span id="load_velocity_func-29"><a href="#load_velocity_func-29"><span class="linenos">29</span></a><span class="sd">    -------</span>
+</span><span id="load_velocity_func-30"><a href="#load_velocity_func-30"><span class="linenos">30</span></a><span class="sd">    Callable[[np.ndarray, np.ndarray, np.ndarray, np.ndarray],</span>
+</span><span id="load_velocity_func-31"><a href="#load_velocity_func-31"><span class="linenos">31</span></a><span class="sd">             (np.ndarray, np.ndarray, np.ndarray)]</span>
+</span><span id="load_velocity_func-32"><a href="#load_velocity_func-32"><span class="linenos">32</span></a><span class="sd">        Given states y, r_s, r_t, and rho, returns v_1, v_2, and v_c.</span>
+</span><span id="load_velocity_func-33"><a href="#load_velocity_func-33"><span class="linenos">33</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="load_velocity_func-34"><a href="#load_velocity_func-34"><span class="linenos">34</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REMI_DIR</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="load_velocity_func-35"><a href="#load_velocity_func-35"><span class="linenos">35</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Returns velocity function for the system</p>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong>Callable[[np.ndarray, np.ndarray, np.ndarray, np.ndarray],</strong>: (np.ndarray, np.ndarray, np.ndarray)]
+Given states y, r_s, r_t, and rho, returns v_1, v_2, and v_c.</li>
+</ul>
+</div>
+
 
                 </section>
                 <section id="load_dynamics_func">
@@ -134,13 +235,83 @@
 
     </div>
     <a class="headerlink" href="#load_dynamics_func"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="load_dynamics_func-16"><a href="#load_dynamics_func-16"><span class="linenos">16</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_dynamics_func</span><span class="p">():</span>
-</span><span id="load_dynamics_func-17"><a href="#load_dynamics_func-17"><span class="linenos">17</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_pth</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;dynamics.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="load_dynamics_func-18"><a href="#load_dynamics_func-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="load_dynamics_func-37"><a href="#load_dynamics_func-37"><span class="linenos">37</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_dynamics_func</span><span class="p">():</span>
+</span><span id="load_dynamics_func-38"><a href="#load_dynamics_func-38"><span class="linenos">38</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REMI_DIR</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;dynamics.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="load_dynamics_func-39"><a href="#load_dynamics_func-39"><span class="linenos">39</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 </span></pre></div>
 
 
     
+
+                </section>
+                <section id="load_ee_func">
+                            <input id="load_ee_func-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">load_ee_func</span><span class="signature pdoc-code condensed">(<span class="return-annotation">) -> <span class="n">Callable</span><span class="p">[[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="load_ee_func-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#load_ee_func"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="load_ee_func-41"><a href="#load_ee_func-41"><span class="linenos">41</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_ee_func</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+</span><span id="load_ee_func-42"><a href="#load_ee_func-42"><span class="linenos">42</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns function to calculate end effector position.</span>
+</span><span id="load_ee_func-43"><a href="#load_ee_func-43"><span class="linenos">43</span></a>
+</span><span id="load_ee_func-44"><a href="#load_ee_func-44"><span class="linenos">44</span></a><span class="sd">    Returns</span>
+</span><span id="load_ee_func-45"><a href="#load_ee_func-45"><span class="linenos">45</span></a><span class="sd">    -------</span>
+</span><span id="load_ee_func-46"><a href="#load_ee_func-46"><span class="linenos">46</span></a><span class="sd">    Callable[[np.ndarray, np.ndarray, np.ndarray], np.ndarray]</span>
+</span><span id="load_ee_func-47"><a href="#load_ee_func-47"><span class="linenos">47</span></a><span class="sd">        Given states y, r_s, and rho, returns end effector position in inertial frame.</span>
+</span><span id="load_ee_func-48"><a href="#load_ee_func-48"><span class="linenos">48</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="load_ee_func-49"><a href="#load_ee_func-49"><span class="linenos">49</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REMI_DIR</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;ee.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="load_ee_func-50"><a href="#load_ee_func-50"><span class="linenos">50</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Returns function to calculate end effector position.</p>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong>Callable[[np.ndarray, np.ndarray, np.ndarray], np.ndarray]</strong>: Given states y, r_s, and rho, returns end effector position in inertial frame.</li>
+</ul>
+</div>
+
+
+                </section>
+                <section id="load_Je_func">
+                            <input id="load_Je_func-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">load_Je_func</span><span class="signature pdoc-code condensed">(<span class="return-annotation">) -> <span class="n">Callable</span><span class="p">[[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="load_Je_func-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#load_Je_func"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="load_Je_func-52"><a href="#load_Je_func-52"><span class="linenos">52</span></a><span class="k">def</span><span class="w"> </span><span class="nf">load_Je_func</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+</span><span id="load_Je_func-53"><a href="#load_Je_func-53"><span class="linenos">53</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns Jacobian of end effector.</span>
+</span><span id="load_Je_func-54"><a href="#load_Je_func-54"><span class="linenos">54</span></a>
+</span><span id="load_Je_func-55"><a href="#load_Je_func-55"><span class="linenos">55</span></a><span class="sd">    Returns</span>
+</span><span id="load_Je_func-56"><a href="#load_Je_func-56"><span class="linenos">56</span></a><span class="sd">    -------</span>
+</span><span id="load_Je_func-57"><a href="#load_Je_func-57"><span class="linenos">57</span></a><span class="sd">    Callable[[np.ndarray, np.ndarray], np.ndarray]</span>
+</span><span id="load_Je_func-58"><a href="#load_Je_func-58"><span class="linenos">58</span></a><span class="sd">        Given states y and rho, returns end effector Jacobian Je.</span>
+</span><span id="load_Je_func-59"><a href="#load_Je_func-59"><span class="linenos">59</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="load_Je_func-60"><a href="#load_Je_func-60"><span class="linenos">60</span></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REMI_DIR</span><span class="p">,</span> <span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="s1">&#39;Je.pkl&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="load_Je_func-61"><a href="#load_Je_func-61"><span class="linenos">61</span></a>        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Returns Jacobian of end effector.</p>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong>Callable[[np.ndarray, np.ndarray], np.ndarray]</strong>: Given states y and rho, returns end effector Jacobian Je.</li>
+</ul>
+</div>
+
 
                 </section>
     </main>

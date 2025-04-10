@@ -188,81 +188,82 @@
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="sd">        Parameters</span>
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">        ----------</span>
 </span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">        E : Callable[[float, np.ndarray, float], bool]</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">            _description_</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">E</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>    <span class="c1"># TODO: probably need target information accessible here</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">controls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Control function used for propagation.</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd">        Parameters</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">        ----------</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">        t : float</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">            Current time.</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">        y : np.ndarray</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">            Current state.</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">        Returns</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">        -------</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">        np.ndarray</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">            Control torques.</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">F</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_tau</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_tau</span><span class="p">)</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dynamics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>                 <span class="n">t</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>                 <span class="n">y</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>                 <span class="n">u</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Dynamics function to be propagated.</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="sd">        Parameters</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">        ----------</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">        t : float</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">            Current time.</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">        y : np.ndarray</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">            Current state.</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">        u : np.ndarray</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">            Control input.</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">        Returns</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">        -------</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">        np.ndarray</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="sd">            Time derivatives of states.</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>        <span class="n">yddot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dyn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>                         <span class="n">u</span><span class="p">,</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">r_t</span><span class="p">,</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">I</span><span class="p">,</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>                         <span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span> 
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">y</span><span class="p">[</span><span class="mi">4</span><span class="p">:],</span> <span class="n">yddot</span><span class="p">))</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to run propagation. Returns Solution class.</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">event</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">)</span>
-</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>            <span class="k">return</span> <span class="kc">False</span>
-</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>
-</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>        <span class="n">sol</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span>
-</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">dynamics</span><span class="p">,</span>
-</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>            <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t_dur</span><span class="p">),</span>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="p">,</span>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>            <span class="n">event</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>        <span class="p">)</span>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>
-</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>        <span class="k">return</span> <span class="n">sol</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">            Terminating event. Takes time, state, and tolerance as input,</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">            returns boolean where True means event occurred.</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">E</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>    <span class="c1"># TODO: probably need target information accessible here</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">controls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Control function used for propagation.</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">        Parameters</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">        ----------</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">        t : float</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">            Current time.</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">        y : np.ndarray</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">            Current state.</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">        Returns</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">        -------</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">        np.ndarray</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">            Control torques.</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">F</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_tau</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_tau</span><span class="p">)</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dynamics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>                 <span class="n">t</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>                 <span class="n">y</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>                 <span class="n">u</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Dynamics function to be propagated.</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">        Parameters</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">        ----------</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">        t : float</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">            Current time.</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">        y : np.ndarray</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">            Current state.</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">        u : np.ndarray</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">            Control input.</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">        Returns</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">        -------</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="sd">        np.ndarray</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">            Time derivatives of states.</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>        <span class="n">yddot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dyn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>                         <span class="n">u</span><span class="p">,</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">r_t</span><span class="p">,</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">I</span><span class="p">,</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>                         <span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span> 
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">y</span><span class="p">[</span><span class="mi">4</span><span class="p">:],</span> <span class="n">yddot</span><span class="p">))</span>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to run propagation. Returns Solution class.</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">event</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">)</span>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>        <span class="n">sol</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">dynamics</span><span class="p">,</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>            <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t_dur</span><span class="p">),</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span>
+</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
+</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="p">,</span>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>            <span class="n">event</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>        <span class="p">)</span>
+</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>
+</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>        <span class="k">return</span> <span class="n">sol</span>
 </span></pre></div>
 
 
@@ -339,81 +340,82 @@
 </span><span id="System-68"><a href="#System-68"><span class="linenos"> 68</span></a><span class="sd">        Parameters</span>
 </span><span id="System-69"><a href="#System-69"><span class="linenos"> 69</span></a><span class="sd">        ----------</span>
 </span><span id="System-70"><a href="#System-70"><span class="linenos"> 70</span></a><span class="sd">        E : Callable[[float, np.ndarray, float], bool]</span>
-</span><span id="System-71"><a href="#System-71"><span class="linenos"> 71</span></a><span class="sd">            _description_</span>
-</span><span id="System-72"><a href="#System-72"><span class="linenos"> 72</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="System-73"><a href="#System-73"><span class="linenos"> 73</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">E</span>
-</span><span id="System-74"><a href="#System-74"><span class="linenos"> 74</span></a>
-</span><span id="System-75"><a href="#System-75"><span class="linenos"> 75</span></a>    <span class="c1"># TODO: probably need target information accessible here</span>
-</span><span id="System-76"><a href="#System-76"><span class="linenos"> 76</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">controls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="System-77"><a href="#System-77"><span class="linenos"> 77</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Control function used for propagation.</span>
-</span><span id="System-78"><a href="#System-78"><span class="linenos"> 78</span></a>
-</span><span id="System-79"><a href="#System-79"><span class="linenos"> 79</span></a><span class="sd">        Parameters</span>
-</span><span id="System-80"><a href="#System-80"><span class="linenos"> 80</span></a><span class="sd">        ----------</span>
-</span><span id="System-81"><a href="#System-81"><span class="linenos"> 81</span></a><span class="sd">        t : float</span>
-</span><span id="System-82"><a href="#System-82"><span class="linenos"> 82</span></a><span class="sd">            Current time.</span>
-</span><span id="System-83"><a href="#System-83"><span class="linenos"> 83</span></a><span class="sd">        y : np.ndarray</span>
-</span><span id="System-84"><a href="#System-84"><span class="linenos"> 84</span></a><span class="sd">            Current state.</span>
-</span><span id="System-85"><a href="#System-85"><span class="linenos"> 85</span></a>
-</span><span id="System-86"><a href="#System-86"><span class="linenos"> 86</span></a><span class="sd">        Returns</span>
-</span><span id="System-87"><a href="#System-87"><span class="linenos"> 87</span></a><span class="sd">        -------</span>
-</span><span id="System-88"><a href="#System-88"><span class="linenos"> 88</span></a><span class="sd">        np.ndarray</span>
-</span><span id="System-89"><a href="#System-89"><span class="linenos"> 89</span></a><span class="sd">            Control torques.</span>
-</span><span id="System-90"><a href="#System-90"><span class="linenos"> 90</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="System-91"><a href="#System-91"><span class="linenos"> 91</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">F</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="System-92"><a href="#System-92"><span class="linenos"> 92</span></a>            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</span><span id="System-93"><a href="#System-93"><span class="linenos"> 93</span></a>
-</span><span id="System-94"><a href="#System-94"><span class="linenos"> 94</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_tau</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_tau</span><span class="p">)</span>
-</span><span id="System-95"><a href="#System-95"><span class="linenos"> 95</span></a>
-</span><span id="System-96"><a href="#System-96"><span class="linenos"> 96</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dynamics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="System-97"><a href="#System-97"><span class="linenos"> 97</span></a>                 <span class="n">t</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-</span><span id="System-98"><a href="#System-98"><span class="linenos"> 98</span></a>                 <span class="n">y</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-</span><span id="System-99"><a href="#System-99"><span class="linenos"> 99</span></a>                 <span class="n">u</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="System-100"><a href="#System-100"><span class="linenos">100</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Dynamics function to be propagated.</span>
-</span><span id="System-101"><a href="#System-101"><span class="linenos">101</span></a>
-</span><span id="System-102"><a href="#System-102"><span class="linenos">102</span></a><span class="sd">        Parameters</span>
-</span><span id="System-103"><a href="#System-103"><span class="linenos">103</span></a><span class="sd">        ----------</span>
-</span><span id="System-104"><a href="#System-104"><span class="linenos">104</span></a><span class="sd">        t : float</span>
-</span><span id="System-105"><a href="#System-105"><span class="linenos">105</span></a><span class="sd">            Current time.</span>
-</span><span id="System-106"><a href="#System-106"><span class="linenos">106</span></a><span class="sd">        y : np.ndarray</span>
-</span><span id="System-107"><a href="#System-107"><span class="linenos">107</span></a><span class="sd">            Current state.</span>
-</span><span id="System-108"><a href="#System-108"><span class="linenos">108</span></a><span class="sd">        u : np.ndarray</span>
-</span><span id="System-109"><a href="#System-109"><span class="linenos">109</span></a><span class="sd">            Control input.</span>
-</span><span id="System-110"><a href="#System-110"><span class="linenos">110</span></a>
-</span><span id="System-111"><a href="#System-111"><span class="linenos">111</span></a><span class="sd">        Returns</span>
-</span><span id="System-112"><a href="#System-112"><span class="linenos">112</span></a><span class="sd">        -------</span>
-</span><span id="System-113"><a href="#System-113"><span class="linenos">113</span></a><span class="sd">        np.ndarray</span>
-</span><span id="System-114"><a href="#System-114"><span class="linenos">114</span></a><span class="sd">            Time derivatives of states.</span>
-</span><span id="System-115"><a href="#System-115"><span class="linenos">115</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="System-116"><a href="#System-116"><span class="linenos">116</span></a>        <span class="n">yddot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dyn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span>
-</span><span id="System-117"><a href="#System-117"><span class="linenos">117</span></a>                         <span class="n">u</span><span class="p">,</span>
-</span><span id="System-118"><a href="#System-118"><span class="linenos">118</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
-</span><span id="System-119"><a href="#System-119"><span class="linenos">119</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">r_t</span><span class="p">,</span>
-</span><span id="System-120"><a href="#System-120"><span class="linenos">120</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span>
-</span><span id="System-121"><a href="#System-121"><span class="linenos">121</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span>
-</span><span id="System-122"><a href="#System-122"><span class="linenos">122</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">I</span><span class="p">,</span>
-</span><span id="System-123"><a href="#System-123"><span class="linenos">123</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
-</span><span id="System-124"><a href="#System-124"><span class="linenos">124</span></a>                         <span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span> 
-</span><span id="System-125"><a href="#System-125"><span class="linenos">125</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">y</span><span class="p">[</span><span class="mi">4</span><span class="p">:],</span> <span class="n">yddot</span><span class="p">))</span>
-</span><span id="System-126"><a href="#System-126"><span class="linenos">126</span></a>
-</span><span id="System-127"><a href="#System-127"><span class="linenos">127</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="System-128"><a href="#System-128"><span class="linenos">128</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to run propagation. Returns Solution class.</span>
-</span><span id="System-129"><a href="#System-129"><span class="linenos">129</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="System-130"><a href="#System-130"><span class="linenos">130</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">event</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-</span><span id="System-131"><a href="#System-131"><span class="linenos">131</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="System-132"><a href="#System-132"><span class="linenos">132</span></a>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">)</span>
-</span><span id="System-133"><a href="#System-133"><span class="linenos">133</span></a>
-</span><span id="System-134"><a href="#System-134"><span class="linenos">134</span></a>            <span class="k">return</span> <span class="kc">False</span>
-</span><span id="System-135"><a href="#System-135"><span class="linenos">135</span></a>
-</span><span id="System-136"><a href="#System-136"><span class="linenos">136</span></a>        <span class="n">sol</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span>
-</span><span id="System-137"><a href="#System-137"><span class="linenos">137</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">dynamics</span><span class="p">,</span>
-</span><span id="System-138"><a href="#System-138"><span class="linenos">138</span></a>            <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t_dur</span><span class="p">),</span>
-</span><span id="System-139"><a href="#System-139"><span class="linenos">139</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span>
-</span><span id="System-140"><a href="#System-140"><span class="linenos">140</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
-</span><span id="System-141"><a href="#System-141"><span class="linenos">141</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="p">,</span>
-</span><span id="System-142"><a href="#System-142"><span class="linenos">142</span></a>            <span class="n">event</span>
-</span><span id="System-143"><a href="#System-143"><span class="linenos">143</span></a>        <span class="p">)</span>
-</span><span id="System-144"><a href="#System-144"><span class="linenos">144</span></a>
-</span><span id="System-145"><a href="#System-145"><span class="linenos">145</span></a>        <span class="k">return</span> <span class="n">sol</span>
+</span><span id="System-71"><a href="#System-71"><span class="linenos"> 71</span></a><span class="sd">            Terminating event. Takes time, state, and tolerance as input,</span>
+</span><span id="System-72"><a href="#System-72"><span class="linenos"> 72</span></a><span class="sd">            returns boolean where True means event occurred.</span>
+</span><span id="System-73"><a href="#System-73"><span class="linenos"> 73</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="System-74"><a href="#System-74"><span class="linenos"> 74</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">E</span>
+</span><span id="System-75"><a href="#System-75"><span class="linenos"> 75</span></a>
+</span><span id="System-76"><a href="#System-76"><span class="linenos"> 76</span></a>    <span class="c1"># TODO: probably need target information accessible here</span>
+</span><span id="System-77"><a href="#System-77"><span class="linenos"> 77</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">controls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="System-78"><a href="#System-78"><span class="linenos"> 78</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Control function used for propagation.</span>
+</span><span id="System-79"><a href="#System-79"><span class="linenos"> 79</span></a>
+</span><span id="System-80"><a href="#System-80"><span class="linenos"> 80</span></a><span class="sd">        Parameters</span>
+</span><span id="System-81"><a href="#System-81"><span class="linenos"> 81</span></a><span class="sd">        ----------</span>
+</span><span id="System-82"><a href="#System-82"><span class="linenos"> 82</span></a><span class="sd">        t : float</span>
+</span><span id="System-83"><a href="#System-83"><span class="linenos"> 83</span></a><span class="sd">            Current time.</span>
+</span><span id="System-84"><a href="#System-84"><span class="linenos"> 84</span></a><span class="sd">        y : np.ndarray</span>
+</span><span id="System-85"><a href="#System-85"><span class="linenos"> 85</span></a><span class="sd">            Current state.</span>
+</span><span id="System-86"><a href="#System-86"><span class="linenos"> 86</span></a>
+</span><span id="System-87"><a href="#System-87"><span class="linenos"> 87</span></a><span class="sd">        Returns</span>
+</span><span id="System-88"><a href="#System-88"><span class="linenos"> 88</span></a><span class="sd">        -------</span>
+</span><span id="System-89"><a href="#System-89"><span class="linenos"> 89</span></a><span class="sd">        np.ndarray</span>
+</span><span id="System-90"><a href="#System-90"><span class="linenos"> 90</span></a><span class="sd">            Control torques.</span>
+</span><span id="System-91"><a href="#System-91"><span class="linenos"> 91</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="System-92"><a href="#System-92"><span class="linenos"> 92</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">F</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="System-93"><a href="#System-93"><span class="linenos"> 93</span></a>            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span><span id="System-94"><a href="#System-94"><span class="linenos"> 94</span></a>
+</span><span id="System-95"><a href="#System-95"><span class="linenos"> 95</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_tau</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_tau</span><span class="p">)</span>
+</span><span id="System-96"><a href="#System-96"><span class="linenos"> 96</span></a>
+</span><span id="System-97"><a href="#System-97"><span class="linenos"> 97</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dynamics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="System-98"><a href="#System-98"><span class="linenos"> 98</span></a>                 <span class="n">t</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span id="System-99"><a href="#System-99"><span class="linenos"> 99</span></a>                 <span class="n">y</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="System-100"><a href="#System-100"><span class="linenos">100</span></a>                 <span class="n">u</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="System-101"><a href="#System-101"><span class="linenos">101</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Dynamics function to be propagated.</span>
+</span><span id="System-102"><a href="#System-102"><span class="linenos">102</span></a>
+</span><span id="System-103"><a href="#System-103"><span class="linenos">103</span></a><span class="sd">        Parameters</span>
+</span><span id="System-104"><a href="#System-104"><span class="linenos">104</span></a><span class="sd">        ----------</span>
+</span><span id="System-105"><a href="#System-105"><span class="linenos">105</span></a><span class="sd">        t : float</span>
+</span><span id="System-106"><a href="#System-106"><span class="linenos">106</span></a><span class="sd">            Current time.</span>
+</span><span id="System-107"><a href="#System-107"><span class="linenos">107</span></a><span class="sd">        y : np.ndarray</span>
+</span><span id="System-108"><a href="#System-108"><span class="linenos">108</span></a><span class="sd">            Current state.</span>
+</span><span id="System-109"><a href="#System-109"><span class="linenos">109</span></a><span class="sd">        u : np.ndarray</span>
+</span><span id="System-110"><a href="#System-110"><span class="linenos">110</span></a><span class="sd">            Control input.</span>
+</span><span id="System-111"><a href="#System-111"><span class="linenos">111</span></a>
+</span><span id="System-112"><a href="#System-112"><span class="linenos">112</span></a><span class="sd">        Returns</span>
+</span><span id="System-113"><a href="#System-113"><span class="linenos">113</span></a><span class="sd">        -------</span>
+</span><span id="System-114"><a href="#System-114"><span class="linenos">114</span></a><span class="sd">        np.ndarray</span>
+</span><span id="System-115"><a href="#System-115"><span class="linenos">115</span></a><span class="sd">            Time derivatives of states.</span>
+</span><span id="System-116"><a href="#System-116"><span class="linenos">116</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="System-117"><a href="#System-117"><span class="linenos">117</span></a>        <span class="n">yddot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dyn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span>
+</span><span id="System-118"><a href="#System-118"><span class="linenos">118</span></a>                         <span class="n">u</span><span class="p">,</span>
+</span><span id="System-119"><a href="#System-119"><span class="linenos">119</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+</span><span id="System-120"><a href="#System-120"><span class="linenos">120</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">r_t</span><span class="p">,</span>
+</span><span id="System-121"><a href="#System-121"><span class="linenos">121</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span>
+</span><span id="System-122"><a href="#System-122"><span class="linenos">122</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span>
+</span><span id="System-123"><a href="#System-123"><span class="linenos">123</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">I</span><span class="p">,</span>
+</span><span id="System-124"><a href="#System-124"><span class="linenos">124</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+</span><span id="System-125"><a href="#System-125"><span class="linenos">125</span></a>                         <span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span> 
+</span><span id="System-126"><a href="#System-126"><span class="linenos">126</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">y</span><span class="p">[</span><span class="mi">4</span><span class="p">:],</span> <span class="n">yddot</span><span class="p">))</span>
+</span><span id="System-127"><a href="#System-127"><span class="linenos">127</span></a>
+</span><span id="System-128"><a href="#System-128"><span class="linenos">128</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="System-129"><a href="#System-129"><span class="linenos">129</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to run propagation. Returns Solution class.</span>
+</span><span id="System-130"><a href="#System-130"><span class="linenos">130</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="System-131"><a href="#System-131"><span class="linenos">131</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">event</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span id="System-132"><a href="#System-132"><span class="linenos">132</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="System-133"><a href="#System-133"><span class="linenos">133</span></a>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">)</span>
+</span><span id="System-134"><a href="#System-134"><span class="linenos">134</span></a>
+</span><span id="System-135"><a href="#System-135"><span class="linenos">135</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="System-136"><a href="#System-136"><span class="linenos">136</span></a>
+</span><span id="System-137"><a href="#System-137"><span class="linenos">137</span></a>        <span class="n">sol</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span>
+</span><span id="System-138"><a href="#System-138"><span class="linenos">138</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">dynamics</span><span class="p">,</span>
+</span><span id="System-139"><a href="#System-139"><span class="linenos">139</span></a>            <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t_dur</span><span class="p">),</span>
+</span><span id="System-140"><a href="#System-140"><span class="linenos">140</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span>
+</span><span id="System-141"><a href="#System-141"><span class="linenos">141</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
+</span><span id="System-142"><a href="#System-142"><span class="linenos">142</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="p">,</span>
+</span><span id="System-143"><a href="#System-143"><span class="linenos">143</span></a>            <span class="n">event</span>
+</span><span id="System-144"><a href="#System-144"><span class="linenos">144</span></a>        <span class="p">)</span>
+</span><span id="System-145"><a href="#System-145"><span class="linenos">145</span></a>
+</span><span id="System-146"><a href="#System-146"><span class="linenos">146</span></a>        <span class="k">return</span> <span class="n">sol</span>
 </span></pre></div>
 
 
@@ -708,9 +710,10 @@ control array.</li>
 </span><span id="System.set_event-68"><a href="#System.set_event-68"><span class="linenos">68</span></a><span class="sd">        Parameters</span>
 </span><span id="System.set_event-69"><a href="#System.set_event-69"><span class="linenos">69</span></a><span class="sd">        ----------</span>
 </span><span id="System.set_event-70"><a href="#System.set_event-70"><span class="linenos">70</span></a><span class="sd">        E : Callable[[float, np.ndarray, float], bool]</span>
-</span><span id="System.set_event-71"><a href="#System.set_event-71"><span class="linenos">71</span></a><span class="sd">            _description_</span>
-</span><span id="System.set_event-72"><a href="#System.set_event-72"><span class="linenos">72</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="System.set_event-73"><a href="#System.set_event-73"><span class="linenos">73</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">E</span>
+</span><span id="System.set_event-71"><a href="#System.set_event-71"><span class="linenos">71</span></a><span class="sd">            Terminating event. Takes time, state, and tolerance as input,</span>
+</span><span id="System.set_event-72"><a href="#System.set_event-72"><span class="linenos">72</span></a><span class="sd">            returns boolean where True means event occurred.</span>
+</span><span id="System.set_event-73"><a href="#System.set_event-73"><span class="linenos">73</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="System.set_event-74"><a href="#System.set_event-74"><span class="linenos">74</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">E</span>
 </span></pre></div>
 
 
@@ -720,7 +723,8 @@ control array.</li>
 
 <ul>
 <li><strong>E</strong> (Callable[[float, np.ndarray, float], bool]):
-_description_</li>
+Terminating event. Takes time, state, and tolerance as input,
+returns boolean where True means event occurred.</li>
 </ul>
 </div>
 
@@ -737,25 +741,25 @@ _description_</li>
 
     </div>
     <a class="headerlink" href="#System.controls"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="System.controls-76"><a href="#System.controls-76"><span class="linenos">76</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">controls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="System.controls-77"><a href="#System.controls-77"><span class="linenos">77</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Control function used for propagation.</span>
-</span><span id="System.controls-78"><a href="#System.controls-78"><span class="linenos">78</span></a>
-</span><span id="System.controls-79"><a href="#System.controls-79"><span class="linenos">79</span></a><span class="sd">        Parameters</span>
-</span><span id="System.controls-80"><a href="#System.controls-80"><span class="linenos">80</span></a><span class="sd">        ----------</span>
-</span><span id="System.controls-81"><a href="#System.controls-81"><span class="linenos">81</span></a><span class="sd">        t : float</span>
-</span><span id="System.controls-82"><a href="#System.controls-82"><span class="linenos">82</span></a><span class="sd">            Current time.</span>
-</span><span id="System.controls-83"><a href="#System.controls-83"><span class="linenos">83</span></a><span class="sd">        y : np.ndarray</span>
-</span><span id="System.controls-84"><a href="#System.controls-84"><span class="linenos">84</span></a><span class="sd">            Current state.</span>
-</span><span id="System.controls-85"><a href="#System.controls-85"><span class="linenos">85</span></a>
-</span><span id="System.controls-86"><a href="#System.controls-86"><span class="linenos">86</span></a><span class="sd">        Returns</span>
-</span><span id="System.controls-87"><a href="#System.controls-87"><span class="linenos">87</span></a><span class="sd">        -------</span>
-</span><span id="System.controls-88"><a href="#System.controls-88"><span class="linenos">88</span></a><span class="sd">        np.ndarray</span>
-</span><span id="System.controls-89"><a href="#System.controls-89"><span class="linenos">89</span></a><span class="sd">            Control torques.</span>
-</span><span id="System.controls-90"><a href="#System.controls-90"><span class="linenos">90</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="System.controls-91"><a href="#System.controls-91"><span class="linenos">91</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">F</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="System.controls-92"><a href="#System.controls-92"><span class="linenos">92</span></a>            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</span><span id="System.controls-93"><a href="#System.controls-93"><span class="linenos">93</span></a>
-</span><span id="System.controls-94"><a href="#System.controls-94"><span class="linenos">94</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_tau</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_tau</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="System.controls-77"><a href="#System.controls-77"><span class="linenos">77</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">controls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="System.controls-78"><a href="#System.controls-78"><span class="linenos">78</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Control function used for propagation.</span>
+</span><span id="System.controls-79"><a href="#System.controls-79"><span class="linenos">79</span></a>
+</span><span id="System.controls-80"><a href="#System.controls-80"><span class="linenos">80</span></a><span class="sd">        Parameters</span>
+</span><span id="System.controls-81"><a href="#System.controls-81"><span class="linenos">81</span></a><span class="sd">        ----------</span>
+</span><span id="System.controls-82"><a href="#System.controls-82"><span class="linenos">82</span></a><span class="sd">        t : float</span>
+</span><span id="System.controls-83"><a href="#System.controls-83"><span class="linenos">83</span></a><span class="sd">            Current time.</span>
+</span><span id="System.controls-84"><a href="#System.controls-84"><span class="linenos">84</span></a><span class="sd">        y : np.ndarray</span>
+</span><span id="System.controls-85"><a href="#System.controls-85"><span class="linenos">85</span></a><span class="sd">            Current state.</span>
+</span><span id="System.controls-86"><a href="#System.controls-86"><span class="linenos">86</span></a>
+</span><span id="System.controls-87"><a href="#System.controls-87"><span class="linenos">87</span></a><span class="sd">        Returns</span>
+</span><span id="System.controls-88"><a href="#System.controls-88"><span class="linenos">88</span></a><span class="sd">        -------</span>
+</span><span id="System.controls-89"><a href="#System.controls-89"><span class="linenos">89</span></a><span class="sd">        np.ndarray</span>
+</span><span id="System.controls-90"><a href="#System.controls-90"><span class="linenos">90</span></a><span class="sd">            Control torques.</span>
+</span><span id="System.controls-91"><a href="#System.controls-91"><span class="linenos">91</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="System.controls-92"><a href="#System.controls-92"><span class="linenos">92</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">F</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="System.controls-93"><a href="#System.controls-93"><span class="linenos">93</span></a>            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span><span id="System.controls-94"><a href="#System.controls-94"><span class="linenos">94</span></a>
+</span><span id="System.controls-95"><a href="#System.controls-95"><span class="linenos">95</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_tau</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_tau</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -790,36 +794,36 @@ Current state.</li>
 
     </div>
     <a class="headerlink" href="#System.dynamics"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="System.dynamics-96"><a href="#System.dynamics-96"><span class="linenos"> 96</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dynamics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="System.dynamics-97"><a href="#System.dynamics-97"><span class="linenos"> 97</span></a>                 <span class="n">t</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-</span><span id="System.dynamics-98"><a href="#System.dynamics-98"><span class="linenos"> 98</span></a>                 <span class="n">y</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-</span><span id="System.dynamics-99"><a href="#System.dynamics-99"><span class="linenos"> 99</span></a>                 <span class="n">u</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="System.dynamics-100"><a href="#System.dynamics-100"><span class="linenos">100</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Dynamics function to be propagated.</span>
-</span><span id="System.dynamics-101"><a href="#System.dynamics-101"><span class="linenos">101</span></a>
-</span><span id="System.dynamics-102"><a href="#System.dynamics-102"><span class="linenos">102</span></a><span class="sd">        Parameters</span>
-</span><span id="System.dynamics-103"><a href="#System.dynamics-103"><span class="linenos">103</span></a><span class="sd">        ----------</span>
-</span><span id="System.dynamics-104"><a href="#System.dynamics-104"><span class="linenos">104</span></a><span class="sd">        t : float</span>
-</span><span id="System.dynamics-105"><a href="#System.dynamics-105"><span class="linenos">105</span></a><span class="sd">            Current time.</span>
-</span><span id="System.dynamics-106"><a href="#System.dynamics-106"><span class="linenos">106</span></a><span class="sd">        y : np.ndarray</span>
-</span><span id="System.dynamics-107"><a href="#System.dynamics-107"><span class="linenos">107</span></a><span class="sd">            Current state.</span>
-</span><span id="System.dynamics-108"><a href="#System.dynamics-108"><span class="linenos">108</span></a><span class="sd">        u : np.ndarray</span>
-</span><span id="System.dynamics-109"><a href="#System.dynamics-109"><span class="linenos">109</span></a><span class="sd">            Control input.</span>
-</span><span id="System.dynamics-110"><a href="#System.dynamics-110"><span class="linenos">110</span></a>
-</span><span id="System.dynamics-111"><a href="#System.dynamics-111"><span class="linenos">111</span></a><span class="sd">        Returns</span>
-</span><span id="System.dynamics-112"><a href="#System.dynamics-112"><span class="linenos">112</span></a><span class="sd">        -------</span>
-</span><span id="System.dynamics-113"><a href="#System.dynamics-113"><span class="linenos">113</span></a><span class="sd">        np.ndarray</span>
-</span><span id="System.dynamics-114"><a href="#System.dynamics-114"><span class="linenos">114</span></a><span class="sd">            Time derivatives of states.</span>
-</span><span id="System.dynamics-115"><a href="#System.dynamics-115"><span class="linenos">115</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="System.dynamics-116"><a href="#System.dynamics-116"><span class="linenos">116</span></a>        <span class="n">yddot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dyn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span>
-</span><span id="System.dynamics-117"><a href="#System.dynamics-117"><span class="linenos">117</span></a>                         <span class="n">u</span><span class="p">,</span>
-</span><span id="System.dynamics-118"><a href="#System.dynamics-118"><span class="linenos">118</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
-</span><span id="System.dynamics-119"><a href="#System.dynamics-119"><span class="linenos">119</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">r_t</span><span class="p">,</span>
-</span><span id="System.dynamics-120"><a href="#System.dynamics-120"><span class="linenos">120</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span>
-</span><span id="System.dynamics-121"><a href="#System.dynamics-121"><span class="linenos">121</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span>
-</span><span id="System.dynamics-122"><a href="#System.dynamics-122"><span class="linenos">122</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">I</span><span class="p">,</span>
-</span><span id="System.dynamics-123"><a href="#System.dynamics-123"><span class="linenos">123</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
-</span><span id="System.dynamics-124"><a href="#System.dynamics-124"><span class="linenos">124</span></a>                         <span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span> 
-</span><span id="System.dynamics-125"><a href="#System.dynamics-125"><span class="linenos">125</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">y</span><span class="p">[</span><span class="mi">4</span><span class="p">:],</span> <span class="n">yddot</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="System.dynamics-97"><a href="#System.dynamics-97"><span class="linenos"> 97</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dynamics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="System.dynamics-98"><a href="#System.dynamics-98"><span class="linenos"> 98</span></a>                 <span class="n">t</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span id="System.dynamics-99"><a href="#System.dynamics-99"><span class="linenos"> 99</span></a>                 <span class="n">y</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="System.dynamics-100"><a href="#System.dynamics-100"><span class="linenos">100</span></a>                 <span class="n">u</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="System.dynamics-101"><a href="#System.dynamics-101"><span class="linenos">101</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Dynamics function to be propagated.</span>
+</span><span id="System.dynamics-102"><a href="#System.dynamics-102"><span class="linenos">102</span></a>
+</span><span id="System.dynamics-103"><a href="#System.dynamics-103"><span class="linenos">103</span></a><span class="sd">        Parameters</span>
+</span><span id="System.dynamics-104"><a href="#System.dynamics-104"><span class="linenos">104</span></a><span class="sd">        ----------</span>
+</span><span id="System.dynamics-105"><a href="#System.dynamics-105"><span class="linenos">105</span></a><span class="sd">        t : float</span>
+</span><span id="System.dynamics-106"><a href="#System.dynamics-106"><span class="linenos">106</span></a><span class="sd">            Current time.</span>
+</span><span id="System.dynamics-107"><a href="#System.dynamics-107"><span class="linenos">107</span></a><span class="sd">        y : np.ndarray</span>
+</span><span id="System.dynamics-108"><a href="#System.dynamics-108"><span class="linenos">108</span></a><span class="sd">            Current state.</span>
+</span><span id="System.dynamics-109"><a href="#System.dynamics-109"><span class="linenos">109</span></a><span class="sd">        u : np.ndarray</span>
+</span><span id="System.dynamics-110"><a href="#System.dynamics-110"><span class="linenos">110</span></a><span class="sd">            Control input.</span>
+</span><span id="System.dynamics-111"><a href="#System.dynamics-111"><span class="linenos">111</span></a>
+</span><span id="System.dynamics-112"><a href="#System.dynamics-112"><span class="linenos">112</span></a><span class="sd">        Returns</span>
+</span><span id="System.dynamics-113"><a href="#System.dynamics-113"><span class="linenos">113</span></a><span class="sd">        -------</span>
+</span><span id="System.dynamics-114"><a href="#System.dynamics-114"><span class="linenos">114</span></a><span class="sd">        np.ndarray</span>
+</span><span id="System.dynamics-115"><a href="#System.dynamics-115"><span class="linenos">115</span></a><span class="sd">            Time derivatives of states.</span>
+</span><span id="System.dynamics-116"><a href="#System.dynamics-116"><span class="linenos">116</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="System.dynamics-117"><a href="#System.dynamics-117"><span class="linenos">117</span></a>        <span class="n">yddot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dyn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span>
+</span><span id="System.dynamics-118"><a href="#System.dynamics-118"><span class="linenos">118</span></a>                         <span class="n">u</span><span class="p">,</span>
+</span><span id="System.dynamics-119"><a href="#System.dynamics-119"><span class="linenos">119</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+</span><span id="System.dynamics-120"><a href="#System.dynamics-120"><span class="linenos">120</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">r_t</span><span class="p">,</span>
+</span><span id="System.dynamics-121"><a href="#System.dynamics-121"><span class="linenos">121</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span>
+</span><span id="System.dynamics-122"><a href="#System.dynamics-122"><span class="linenos">122</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span>
+</span><span id="System.dynamics-123"><a href="#System.dynamics-123"><span class="linenos">123</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">I</span><span class="p">,</span>
+</span><span id="System.dynamics-124"><a href="#System.dynamics-124"><span class="linenos">124</span></a>                         <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+</span><span id="System.dynamics-125"><a href="#System.dynamics-125"><span class="linenos">125</span></a>                         <span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span> 
+</span><span id="System.dynamics-126"><a href="#System.dynamics-126"><span class="linenos">126</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">y</span><span class="p">[</span><span class="mi">4</span><span class="p">:],</span> <span class="n">yddot</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -856,25 +860,25 @@ Control input.</li>
 
     </div>
     <a class="headerlink" href="#System.run"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="System.run-127"><a href="#System.run-127"><span class="linenos">127</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="System.run-128"><a href="#System.run-128"><span class="linenos">128</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to run propagation. Returns Solution class.</span>
-</span><span id="System.run-129"><a href="#System.run-129"><span class="linenos">129</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="System.run-130"><a href="#System.run-130"><span class="linenos">130</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">event</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-</span><span id="System.run-131"><a href="#System.run-131"><span class="linenos">131</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="System.run-132"><a href="#System.run-132"><span class="linenos">132</span></a>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">)</span>
-</span><span id="System.run-133"><a href="#System.run-133"><span class="linenos">133</span></a>
-</span><span id="System.run-134"><a href="#System.run-134"><span class="linenos">134</span></a>            <span class="k">return</span> <span class="kc">False</span>
-</span><span id="System.run-135"><a href="#System.run-135"><span class="linenos">135</span></a>
-</span><span id="System.run-136"><a href="#System.run-136"><span class="linenos">136</span></a>        <span class="n">sol</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span>
-</span><span id="System.run-137"><a href="#System.run-137"><span class="linenos">137</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">dynamics</span><span class="p">,</span>
-</span><span id="System.run-138"><a href="#System.run-138"><span class="linenos">138</span></a>            <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t_dur</span><span class="p">),</span>
-</span><span id="System.run-139"><a href="#System.run-139"><span class="linenos">139</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span>
-</span><span id="System.run-140"><a href="#System.run-140"><span class="linenos">140</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
-</span><span id="System.run-141"><a href="#System.run-141"><span class="linenos">141</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="p">,</span>
-</span><span id="System.run-142"><a href="#System.run-142"><span class="linenos">142</span></a>            <span class="n">event</span>
-</span><span id="System.run-143"><a href="#System.run-143"><span class="linenos">143</span></a>        <span class="p">)</span>
-</span><span id="System.run-144"><a href="#System.run-144"><span class="linenos">144</span></a>
-</span><span id="System.run-145"><a href="#System.run-145"><span class="linenos">145</span></a>        <span class="k">return</span> <span class="n">sol</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="System.run-128"><a href="#System.run-128"><span class="linenos">128</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="System.run-129"><a href="#System.run-129"><span class="linenos">129</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to run propagation. Returns Solution class.</span>
+</span><span id="System.run-130"><a href="#System.run-130"><span class="linenos">130</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="System.run-131"><a href="#System.run-131"><span class="linenos">131</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">event</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span id="System.run-132"><a href="#System.run-132"><span class="linenos">132</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="System.run-133"><a href="#System.run-133"><span class="linenos">133</span></a>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">)</span>
+</span><span id="System.run-134"><a href="#System.run-134"><span class="linenos">134</span></a>
+</span><span id="System.run-135"><a href="#System.run-135"><span class="linenos">135</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="System.run-136"><a href="#System.run-136"><span class="linenos">136</span></a>
+</span><span id="System.run-137"><a href="#System.run-137"><span class="linenos">137</span></a>        <span class="n">sol</span> <span class="o">=</span> <span class="n">integrate</span><span class="p">(</span>
+</span><span id="System.run-138"><a href="#System.run-138"><span class="linenos">138</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">dynamics</span><span class="p">,</span>
+</span><span id="System.run-139"><a href="#System.run-139"><span class="linenos">139</span></a>            <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t_dur</span><span class="p">),</span>
+</span><span id="System.run-140"><a href="#System.run-140"><span class="linenos">140</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span>
+</span><span id="System.run-141"><a href="#System.run-141"><span class="linenos">141</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
+</span><span id="System.run-142"><a href="#System.run-142"><span class="linenos">142</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="p">,</span>
+</span><span id="System.run-143"><a href="#System.run-143"><span class="linenos">143</span></a>            <span class="n">event</span>
+</span><span id="System.run-144"><a href="#System.run-144"><span class="linenos">144</span></a>        <span class="p">)</span>
+</span><span id="System.run-145"><a href="#System.run-145"><span class="linenos">145</span></a>
+</span><span id="System.run-146"><a href="#System.run-146"><span class="linenos">146</span></a>        <span class="k">return</span> <span class="n">sol</span>
 </span></pre></div>
 
 
