@@ -50,7 +50,7 @@ def load_ee_func() -> Callable[[np.ndarray, np.ndarray, np.ndarray], np.ndarray]
     Callable[[np.ndarray, np.ndarray, np.ndarray], np.ndarray]
         Given states y, r_s, and rho, returns end effector position in inertial frame.
     """
-    with open(os.path.join(_pth, "functions", "ee.pkl"), "rb") as f:
+    with open(os.path.join(REMI_DIR, "src", "functions", "ee.pkl"), "rb") as f:
         return dill.load(f)
 
 
@@ -62,5 +62,5 @@ def load_Je_func() -> Callable[[np.ndarray, np.ndarray], np.ndarray]:
     Callable[[np.ndarray, np.ndarray], np.ndarray]
         Given states y and rho, returns end effector Jacobian Je.
     """
-    with open(os.path.join(_pth, "functions", "Je.pkl"), "rb") as f:
+    with open(os.path.join(REMI_DIR, "src", "functions", "Je.pkl"), "rb") as f:
         return dill.load(f)
