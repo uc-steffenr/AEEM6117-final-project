@@ -7,7 +7,7 @@ import dill
 _pth = os.path.join('/', *__file__.split('/')[:-1])
 
 def load_position_func() -> Callable[[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
-                                     (np.ndarray, np.ndarray, np.ndarray)]:
+                                     tuple[np.ndarray, np.ndarray, np.ndarray]]:
     """Returns position function for system.
 
     Returns
@@ -20,7 +20,7 @@ def load_position_func() -> Callable[[np.ndarray, np.ndarray, np.ndarray, np.nda
         return dill.load(f)
 
 def load_velocity_func() -> Callable[[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
-                                     (np.ndarray, np.ndarray, np.ndarray)]:
+                                     tuple[np.ndarray, np.ndarray, np.ndarray]]:
     """Returns velocity function for the system
 
     Returns
