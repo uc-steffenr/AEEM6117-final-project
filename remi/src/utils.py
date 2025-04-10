@@ -4,7 +4,7 @@ import numpy as np
 from typing import Callable
 import dill
 
-_pth = os.path.join('/', *__file__.split('/')[:-1])
+_pth = os.path.abspath('.')
 
 def load_position_func() -> Callable[[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
                                      tuple[np.ndarray, np.ndarray, np.ndarray]]:
