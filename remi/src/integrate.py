@@ -25,23 +25,23 @@ def integrate(plant, t_span, y0, step_size, F, event=None):
     sol = Solution()
     sol.t = ts
     sol.y = np.zeros((n, y0.size))
-    sol.u = np.zeros((n-1, 3))
+    sol.u = np.zeros((n-1, 4))
     sol.y[0, :] = y0
 
     # Main integration loop
     y = y0
     for i in range(1, n):
-        try:
-            u = F(ts[i], y)
-            y = RK4(plant, ts[i], y, step_size, (u,))
+        # try:
+        u = F(ts[i], y)
+        y = RK4(plant, ts[i], y, step_size, (u,))
         # Integration error
-        except Exception as e:
-            print(f'WARNING: {e}')
-            sol.y = sol.y[:i, :]
-            sol.t = ts[:i]
-            sol.u = sol.u[:i, :]
-            sol.status = -1
-            return sol
+        # except Exception as e:
+        #     print(f'WARNING: {e}')
+        #     sol.y = sol.y[:i, :]
+        #     sol.t = ts[:i]
+        #     sol.u = sol.u[:i, :]
+        #     sol.status = -1
+        #     return sol
 
         sol.y[i, :] = y
         sol.u[i-1, :] = u

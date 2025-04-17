@@ -157,7 +157,7 @@ def calc_capture_point_velocity(y : np.ndarray,
     np.ndarray
         Velocty of the capture point.
     """
-    return v_cp(y, rho, r_t)
+    return v_c(y, rho, r_t)
 
 
 def calc_end_effector_velocity(y : np.ndarray,

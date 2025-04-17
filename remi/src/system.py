@@ -3,7 +3,7 @@ import numpy as np
 from typing import Callable
 
 from .integrate import integrate
-from .utils import load_dynamics_func
+from .dynamics import forward_dynamics
 
 
 class System:
@@ -24,7 +24,7 @@ class System:
                 - m - array of mass values for satellite, links, and target
                 - rho - array of length values
                 - I - array of inertia values
-                - b - non-conservative parameters
+                - d - non-conservative parameters
         settings : dict, optional
             Propagation settings, by default dict().
                 - t_dur - duration of propagation
@@ -34,19 +34,18 @@ class System:
         """
         self.y0 = y0
 
-        self.r_s = np.reshape(parameters['r_s'], (1, 2))
-        self.r_t = np.reshape(parameters['r_t'], (1, 2))
+        self.r_s = parameters['r_s']
+        self.r_t = parameters['r_t']
         self.m = parameters['m']
         self.rho = parameters['rho']
         self.I = parameters['I']
-        self.b = parameters['b']
+        self.d = parameters['d']
 
         self.t_dur = settings.get('t_dur', 15.)
         self.h = settings.get('step_size', 0.01)
         self.tol = settings.get('tol', 0.01)
-        self.max_tau = np.array(settings.get('max_tau', (10., 10., 10.)))
+        self.max_tau = np.array(settings.get('max_tau', (10., 10., 10., 0.)))
 
-        self.dyn = load_dynamics_func()
         self.event = None
         self.F = None
 
@@ -62,7 +61,7 @@ class System:
         self.F = F
 
     def set_event(self, E : Callable[[float, np.ndarray, float], bool]) -> None:
-        """Even to end propagation.
+        """Event to end propagation.
 
         Parameters
         ----------
@@ -113,15 +112,15 @@ class System:
         np.ndarray
             Time derivatives of states.
         """
-        yddot = self.dyn(y,
-                         u,
-                         self.r_s,
-                         self.r_t,
-                         self.rho,
-                         self.m,
-                         self.I,
-                         self.b
-                         ).squeeze() 
+        yddot = forward_dynamics(y,
+                                 u,
+                                 self.r_s,
+                                 self.r_t,
+                                 self.rho,
+                                 self.m,
+                                 self.I,
+                                 self.d
+                                 ).squeeze() 
         return np.hstack((y[4:], yddot))
 
     def run(self):
