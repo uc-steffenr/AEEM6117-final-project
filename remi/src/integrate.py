@@ -31,17 +31,17 @@ def integrate(plant, t_span, y0, step_size, F, event=None):
     # Main integration loop
     y = y0
     for i in range(1, n):
-        # try:
-        u = F(ts[i], y)
-        y = RK4(plant, ts[i], y, step_size, (u,))
+        try:
+            u = F(ts[i], y)
+            y = RK4(plant, ts[i], y, step_size, (u,))
         # Integration error
-        # except Exception as e:
-        #     print(f'WARNING: {e}')
-        #     sol.y = sol.y[:i, :]
-        #     sol.t = ts[:i]
-        #     sol.u = sol.u[:i, :]
-        #     sol.status = -1
-        #     return sol
+        except Exception as e:
+            print(f'WARNING: {e}')
+            sol.y = sol.y[:i, :]
+            sol.t = ts[:i]
+            sol.u = sol.u[:i, :]
+            sol.status = -1
+            return sol
 
         sol.y[i, :] = y
         sol.u[i-1, :] = u

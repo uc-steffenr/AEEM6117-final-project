@@ -5,6 +5,7 @@ from .utils import load_func
 from .kinematics import (calc_capture_point_position,
                          calc_capture_point_velocity,
                          calc_critical_positions,
+                         calc_critical_velocities,
                          calc_obstacle_point_positions,
                          calc_obstacle_point_velocities)
 
@@ -229,10 +230,10 @@ def calc_lambda_dot(y : np.ndarray,
 
 # Wrapped Functions That Take Care of Obstacle Point Search
 # ----------------------------------------------------------------------
-def _get_obstacle_points(y : np.ndarray,
-                         rho : np.ndarray,
-                         r_s : np.ndarray,
-                         r_t : np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def get_gam2_vals(y : np.ndarray,
+                  rho : np.ndarray,
+                  r_s : np.ndarray,
+                  r_t : np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Gets the two closest obstacle points for every critical point.
 
     Parameters
@@ -260,7 +261,10 @@ def _get_obstacle_points(y : np.ndarray,
     cps = list(calc_critical_positions(y, rho, r_s))
     cps = [cp.flatten() for cp in cps]
 
-    # Calculate velocities of obstacle points
+    # Calculate velocities of critical points and obstacle points
+    v_cps = list(calc_critical_velocities(y, rho, r_s))
+    v_cps = [v.flatten() for v in v_cps]
+
     v_ops = list(calc_obstacle_point_velocities(y, rho, r_t))
     v_capture_pt = calc_capture_point_velocity(y, rho, r_t)
     v_ops +=[v_capture_pt]
@@ -269,6 +273,8 @@ def _get_obstacle_points(y : np.ndarray,
     # Search for closest obstacle points for each critical point
     pos = np.zeros((3, 2, 2))
     vel = np.zeros((3, 2, 2))
+    djk = [None] * 3
+    djk_dot = [None] * 3
     for i, cp in enumerate(cps):
         dists = [np.sqrt((cp[0] - op[0])**2 + (cp[1] - op[1])**2) for op in ops]
         sorted_dists = sorted(dists, key=float)
@@ -282,18 +288,24 @@ def _get_obstacle_points(y : np.ndarray,
         elif i == 2 and ind2 == len(ops)-1:
             ind2 = dists.index(sorted_dists[2])
 
+        djk[i] = (dists[ind1], dists[ind2])
+        djk_dot[i] = (np.sqrt((v_cps[i][0] - v_ops[ind1][0])**2 + \
+                              (v_cps[i][1] - v_ops[ind1][1])**2),
+                      np.sqrt((v_cps[i][0] - v_ops[ind2][0])**2 + \
+                              (v_cps[i][1] - v_ops[ind2][1])**2))
         pos[i, 0, :] = ops[ind1]
         pos[i, 1, :] = ops[ind2]
         vel[i, 0, :] = v_ops[ind1]
         vel[i, 1, :] = v_ops[ind2]
 
-    return pos, vel
+    return pos, vel, djk, djk_dot
 
 
 def calc_clik_params(y : np.ndarray,
                      rho : np.ndarray,
                      r_s : np.ndarray,
-                     r_t : np.ndarray,
+                     pos,
+                     vel,
                      p : np.ndarray,
                      q_bar : np.ndarray,
                      q_max : np.ndarray,
@@ -325,11 +337,10 @@ def calc_clik_params(y : np.ndarray,
 
     Returns
     -------
-    tuple[np.ndarray, np.ndarray]
-        Lambda and lambda_dot values.
+    tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+        Lambda and lambda_dot values. Also position and velocity
+        of respective obstacle points to be used in FIS inference.
     """
-    pos, vel = _get_obstacle_points(y, rho, r_s, r_t)
-
     lam = calc_lambda(y,
                       rho,
                       r_s,
