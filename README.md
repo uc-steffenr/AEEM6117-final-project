@@ -13,5 +13,5 @@ Install `remi`. \
 **Check out examples for usage.**
 
 ## TODO
-- Need a widespread way to set controllers and events for `Simulation` conditions
-- Should `r_s` and `r_t` be parameters that are changed for multiple simulations?
+- Finish gamma_2 calculation, then do lambda and lambda dot
+- Save every new function into pkl file

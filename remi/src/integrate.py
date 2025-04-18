@@ -25,7 +25,7 @@ def integrate(plant, t_span, y0, step_size, F, event=None):
     sol = Solution()
     sol.t = ts
     sol.y = np.zeros((n, y0.size))
-    sol.u = np.zeros((n-1, 3))
+    sol.u = np.zeros((n-1, 4))
     sol.y[0, :] = y0
 
     # Main integration loop

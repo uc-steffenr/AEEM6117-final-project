@@ -14,12 +14,6 @@ __author__ = "Nate Steffen"
 __email__ = "steffenr@mail.uc.edu"
 __version__ = "0.0.1"
 
-from .src import (System,
-                  Simulation,
-                  plot_states,
-                  plot_controls,
-                  animate,
-                  load_position_func,
-                  load_velocity_func,
-                  load_ee_func,
-                  load_Je_func)
+import os
+
+__path__.insert(0, os.path.join(os.path.dirname(__file__), "src"))

@@ -101,9 +101,9 @@ def plot_controls(t : np.ndarray,
     """
     fig, ax = plt.subplots(1, 1)
 
-    ax.plot(t[:-1], u[:, 0], label=r'$\tau_S$')
-    ax.plot(t[:-1], u[:, 1], label=r'$\tau_1$')
-    ax.plot(t[:-1], u[:, 2], label=r'$\tau_2$')
+    ax.plot(t, u[:, 0], label=r'$\tau_S$')
+    ax.plot(t, u[:, 1], label=r'$\tau_1$')
+    ax.plot(t, u[:, 2], label=r'$\tau_2$')
     ax.set_ylabel('torque (Nm)')
     ax.set_xlabel('time (s)')
     ax.legend()

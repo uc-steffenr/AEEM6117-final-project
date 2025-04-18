@@ -1,5 +1,6 @@
 """Defines framework to run multiple simulations and get metrics."""
 import numpy as np
+from typing import Callable
 from joblib import Parallel, delayed, parallel_backend
 
 from .system import System
@@ -10,8 +11,6 @@ def evaluate(args : tuple[System]):
     return cond.run()
 
 
-# TODO: need a widespread way to set controller and events for conds
-# TODO: might need to make r_s and r_t changed for simulations
 class Simulation:
     def __init__(self,
                  conditions : list[np.ndarray],
@@ -37,6 +36,33 @@ class Simulation:
                       for y0 in conditions]
         self.N = len(self.conds)
 
+
+    def set_controller(self, F : Callable[[float, np.ndarray], np.ndarray]):
+        """Sets controller for every condition.
+
+        Parameters
+        ----------
+        F : Callable[[float, np.ndarray], np.ndarray]
+            Control function. Takes time and state as input, returns
+            controll array.
+        """
+        for i in range(self.N):
+            self.conds[i].set_controller(F)
+
+
+    def set_event(self, E : Callable[[float, np.ndarray, float], bool]):
+        """Sets terminating event for every condition.
+
+        Parameters
+        ----------
+        E : Callable[[float, np.ndarray, float], bool]
+            Terminating event. Takes time, state, and tolerance as input,
+            returns boolean where True means event occurred.
+        """
+        for i in range(self.N):
+            self.conds[i].set_event(E)
+
+
     def run_simulations(self) -> dict:
         """Method to run simulations in serial.
 
@@ -58,7 +84,8 @@ class Simulation:
             metrics['statuses'][i] = sol.status
 
         return metrics
-    
+
+
     def run_parallel_simulations(self,
                                  backend : str='loky'
                                  ) -> dict:
