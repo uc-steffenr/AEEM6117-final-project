@@ -3,6 +3,7 @@ import numpy as np
 from remi.system import System
 from remi.visualize import plot_states, plot_controls, animate
 from remi.plots import Plots
+import matplotlib.pyplot as plt
 
 # Physical Parameters
 r_s = np.array([-1.5, 0.0])
@@ -56,3 +57,5 @@ print(f"Sim status: {sol.status}")
 dp = Plots()
 for t, y, u in zip(sol.t, sol.y, sol.u):
     dp.update(t, y, u)
+plt.waitforbuttonpress()
+plt.close()

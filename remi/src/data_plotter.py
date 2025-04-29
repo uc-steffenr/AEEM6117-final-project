@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+plt.style.use("dark_background")
 from matplotlib.lines import Line2D
 
 import numpy as np
@@ -67,66 +68,35 @@ class DataPlotter:
         # update the time history of all plot variables
 
         thetaS = states.item(0)
-
         theta1 = states.item(1)
-
         theta2 = states.item(2)
-
         thetaT = states.item(3)
 
         tauS = ctrl.item(0)
-
         tau1 = ctrl.item(1)
-
         tau2 = ctrl.item(2)
 
         self.time_history.append(t)
 
         self.thetas_history.append(thetaS)
-
         self.theta1_history.append(theta1)
-
         self.theta2_history.append(theta2)
-
         self.thetat_history.append(thetaT)
 
         self.taus_history.append(tauS)
-
         self.tau1_history.append(tau1)
-
         self.tau2_history.append(tau2)
 
         with plt.ion():
 
             self.thetas_plot.update(self.time_history, [self.thetas_history])
-
             self.theta1_plot.update(self.time_history, [self.theta1_history])
-
             self.theta2_plot.update(self.time_history, [self.theta2_history])
-
             self.thetat_plot.update(self.time_history, [self.thetat_history])
 
             self.taus_plot.update(self.time_history, [self.taus_history])
-
             self.tau1_plot.update(self.time_history, [self.tau1_history])
-
             self.tau2_plot.update(self.time_history, [self.tau2_history])
-
-            self.thetas_plot.ax.get_figure().canvas.draw()
-
-            self.thetat_plot.ax.get_figure().canvas.draw()
-
-            self.theta1_plot.ax.get_figure().canvas.draw()
-
-            self.theta2_plot.ax.get_figure().canvas.draw()
-
-            self.taus_plot.ax.get_figure().canvas.draw()
-
-            self.tau1_plot.ax.get_figure().canvas.draw()
-
-            self.tau2_plot.ax.get_figure().canvas.draw()
-
-            self.ee_plot.ax.get_figure().canvas.draw()
 
     def get_anim_ax(self):
 
@@ -159,7 +129,7 @@ class SimplePlot:
 
         self.ax = ax  # Axes handle
 
-        self.colors = ["b", "g", "r", "c", "m", "y", "b"]
+        self.colors = ["#f268d2", "#9dfc03", "r", "c", "m", "y", "b"]
 
         # A list of colors. The first color in the list corresponds
 
