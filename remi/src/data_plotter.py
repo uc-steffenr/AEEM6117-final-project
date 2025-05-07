@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 
+from remi.src.kinematics import calc_end_effector_position
+
 plt.style.use("dark_background")
 from matplotlib.lines import Line2D
 
@@ -10,7 +12,7 @@ from typing import List, Dict
 
 class DataPlotter:
 
-    def __init__(self, axs: Dict[str, plt.Axes]):
+    def __init__(self, axs: Dict[str, plt.Axes], params):
 
         self.time_history: List[float] = []  # time
         self.thetas_history: List[float] = []  # satellite theta
@@ -56,6 +58,26 @@ class DataPlotter:
         self.ee_plot = SimplePlot(
             axs["ee"], "Time (s)", "EE", "EE Pose vs. Target Pose"
         )
+        self.params = params
+
+    def calculate_target(self, states):
+        rho = self.params["rho"]
+        r_s = self.params["r_s"]
+        r_t = self.params["r_t"]
+
+        C = lambda th: np.array([[np.cos(th), -np.sin(th)], [np.sin(th), np.cos(th)]])
+        r_0 = lambda th_s: r_s + C(th_s) @ np.array([rho[0], 0.0])
+        r_1 = lambda th_s, th_1: r_0(th_s) + C(th_s) @ C(th_1) @ np.array(
+            [2.0 * rho[1], 0.0]
+        )
+        r_2 = lambda th_s, th_1, th_2: r_1(th_s, th_1) + C(th_s) @ C(th_1) @ C(
+            th_2
+        ) @ np.array([2.0 * rho[2], 0.0])
+        r_c = lambda th: r_t + C(th) @ np.array([0.0, rho[3]])
+
+        th_t = states.item(3)
+        rc = r_c(th_t)
+        return [rc[0], rc[1]]
 
     def update(self, t, states, ctrl):
 
@@ -87,6 +109,14 @@ class DataPlotter:
         self.tau1_history.append(tau1)
         self.tau2_history.append(tau2)
 
+        r_ee = calc_end_effector_position(
+            states, self.params["rho"], self.params["r_s"]
+        )
+        self.eex_history.append(r_ee[0])
+        self.eey_history.append(r_ee[1])
+        target_pt = self.calculate_target(states)
+        self.targetx_history.append(target_pt[0])
+        self.targety_history.append(target_pt[1])
         with plt.ion():
 
             self.thetas_plot.update(self.time_history, [self.thetas_history])
@@ -97,6 +127,16 @@ class DataPlotter:
             self.taus_plot.update(self.time_history, [self.taus_history])
             self.tau1_plot.update(self.time_history, [self.tau1_history])
             self.tau2_plot.update(self.time_history, [self.tau2_history])
+
+            self.ee_plot.update(
+                self.time_history,
+                [
+                    self.eex_history,
+                    self.eey_history,
+                    self.targetx_history,
+                    self.targety_history,
+                ],
+            )
 
     def get_anim_ax(self):
 
